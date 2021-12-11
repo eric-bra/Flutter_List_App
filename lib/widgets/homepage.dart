@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:listapp/DataManaging/db_handler.dart';
-import 'package:listapp/DataManaging/tts_handler.dart';
 import 'package:listapp/constants.dart';
 import 'package:listapp/model/todo_list.dart';
 import 'package:listapp/widgets/add_button.dart';
@@ -19,7 +18,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool _isLoading = false;
-  final TtSHandler _tts = TtSHandler.instance;
   final DbHandler _db = DbHandler.instance;
   late List<ToDoList> lists;
 
@@ -57,13 +55,29 @@ class _HomePageState extends State<HomePage> {
     _refreshLists();
   }
 
+  void _openList(BuildContext context, int counter) async {
+    if (counter < lists.length) {
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ToDoListing(
+            listId: lists[counter].id,
+            listName: lists[counter].name,
+          ),
+        ),
+      );
+    }
+  }
+
   void _readListElements(BuildContext context) {
     if (lists.isEmpty) return;
-    _tts.speak(lists[0].name);
     showModalBottomSheet(
         context: context,
         builder: (context) {
-          return SpeechController(list: lists);
+          return SpeechController(
+            onAction: _openList,
+            getListLength: () => lists.length,
+            getString: (int counter) => lists[counter].name,
+          );
         });
   }
 
@@ -71,15 +85,15 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: MaterialButton(
-          child: Icon(
-            _tts.ttsState == TtsState.playing
-                ? Icons.pause_rounded
-                : Icons.play_arrow_rounded,
-            color: ThemeData.dark().indicatorColor,
+        actions: [
+          MaterialButton(
+            child: Icon(
+              Icons.play_arrow_rounded,
+              color: ThemeData.dark().indicatorColor,
+            ),
+            onPressed: () => _readListElements(context),
           ),
-          onPressed: () => _readListElements(context),
-        ),
+        ],
         title: const Text(
           "Listen",
           style: style,
