@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listapp/constants.dart';
 import 'package:listapp/model/todo.dart';
 
 class ToDoListTile extends StatelessWidget {
@@ -14,10 +15,7 @@ class ToDoListTile extends StatelessWidget {
         child: CheckboxListTile(
             title: Text(
               todo.content,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+              style: style,
             ),
             value: todo.checked,
             onChanged: (b) {

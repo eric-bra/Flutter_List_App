@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:listapp/DataManaging/db_handler.dart';
+import 'package:listapp/constants.dart';
 import 'package:listapp/widgets/add_button.dart';
 import 'package:listapp/widgets/add_todo_dialog.dart';
 import 'package:listapp/widgets/todolisttile.dart';
@@ -46,10 +47,7 @@ class _ToDoListingState extends State<ToDoListing> {
       appBar: AppBar(
           title: Text(
         widget.listName,
-        style: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-        ),
+        style: style,
       )),
       body: FutureBuilder<List>(
         future: _toDoHandler.todosByList(widget.listId),

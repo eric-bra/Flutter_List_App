@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:listapp/constants.dart';
 import 'add_button.dart';
 
 ///Represents a Dialog with a text field and a Add-Button.
@@ -31,10 +31,7 @@ class _AddToDoDialogState extends State<AddToDoDialog> {
                     onSubmitted: (text) {
                       _val = text;
                       },
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: style,
                   ),
                 )),
             Padding(

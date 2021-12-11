@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:listapp/DataManaging/db_handler.dart';
 import 'package:listapp/DataManaging/tts_handler.dart';
+import 'package:listapp/constants.dart';
 import 'package:listapp/model/todo_list.dart';
 import 'package:listapp/widgets/add_button.dart';
 import 'package:listapp/widgets/speech_controller.dart';
 import 'package:listapp/widgets/todo_listing.dart';
-
 import 'add_todo_dialog.dart';
 import 'list_card.dart';
 
@@ -82,10 +82,7 @@ class _HomePageState extends State<HomePage> {
         ),
         title: const Text(
           "Listen",
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
+          style: style,
         ),
       ),
       body: _isLoading
@@ -94,10 +91,7 @@ class _HomePageState extends State<HomePage> {
               ? const Center(
                   child: Text(
                   'Keine Listen',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: style,
                 ))
               : buildLists(context),
       floatingActionButton: AddButton(

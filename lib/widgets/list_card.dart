@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:listapp/constants.dart';
 import 'package:listapp/model/todo_list.dart';
 import 'package:listapp/widgets/menu_button.dart';
+
 
 final _lightColors = [
   Colors.amber.shade300,
@@ -35,10 +37,8 @@ class ListCard extends StatelessWidget {
           Expanded(
             child: Text(
               list.name,
-              style: TextStyle(
-                color: color,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+              style: style.merge(
+                TextStyle(color: color),
               ),
             ),
           ),

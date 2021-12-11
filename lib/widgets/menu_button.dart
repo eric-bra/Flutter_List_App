@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-enum ButtonValues{delete}
+import 'package:listapp/constants.dart';
+
+
+enum ButtonValues { delete }
 
 class MenuButton extends StatelessWidget {
-  const MenuButton({Key? key, required this.onDelete, required this.id}) : super(key: key);
+  const MenuButton({Key? key, required this.onDelete, required this.id})
+      : super(key: key);
 
   final void Function(int id) onDelete;
   final int id;
@@ -13,23 +17,25 @@ class MenuButton extends StatelessWidget {
       onSelected: (value) => _onSelected(value),
       itemBuilder: (context) => [
         const PopupMenuItem<ButtonValues>(
-            value: ButtonValues.delete,
-            child: Text(
-              "Löschen",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),)),
+          value: ButtonValues.delete,
+          child: Text(
+            'Löschen',
+            style:  style,
+          ),
+        ),
       ],
     );
   }
+
   void _onSelected(ButtonValues value) {
-    switch(value) {
-      case ButtonValues.delete: {
-        onDelete(id);
+    switch (value) {
+      case ButtonValues.delete:
+        {
+          onDelete(id);
+          return;
+        }
+      default:
         return;
-      }
-      default: return;
     }
   }
 }
