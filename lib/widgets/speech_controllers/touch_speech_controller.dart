@@ -1,31 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:listapp/DataManaging/tts_handler.dart';
+import 'package:listapp/model/readable.dart';
 
-class SpeechController extends StatefulWidget {
-  const SpeechController({Key? key,
-    required this.onAction,
-    required this.getListLength,
-    required this.getString}
-    ) : super(key: key);
+class TouchSpeechController extends StatefulWidget {
+  const TouchSpeechController(
+      {Key? key, required this.onAction, required this.list})
+      : super(key: key);
 
-  final void Function(BuildContext, int counter) onAction;
-  final String Function(int counter) getString;
-  final int Function() getListLength;
-
+  final void Function(int id) onAction;
+  final List<Readable> list;
 
   @override
-  _SpeechControllerState createState() => _SpeechControllerState();
-
+  _TouchSpeechControllerState createState() => _TouchSpeechControllerState();
 }
 
-class _SpeechControllerState extends State<SpeechController> {
+class _TouchSpeechControllerState extends State<TouchSpeechController> {
+  int counter = 0;
+
   @override
   void initState() {
     super.initState();
-    if (widget.getListLength() == 0) return;
-    _tts.speak(widget.getString(counter));
+    if (widget.list.isEmpty) return;
+    _tts.speak(widget.list[counter].getText());
   }
-  int counter = 0;
 
   void _endPlaying(BuildContext context) {
     _tts.stop();
@@ -34,10 +31,11 @@ class _SpeechControllerState extends State<SpeechController> {
 
   final _tts = TtSHandler.instance;
 
-  void _inc(){
+  void _inc() {
     setState(() {
       counter++;
     });
+    _tts.speak(widget.list[counter].getText());
   }
 
   @override
@@ -45,7 +43,7 @@ class _SpeechControllerState extends State<SpeechController> {
     return Padding(
         padding: MediaQuery.of(context).viewInsets,
         child: Row(
-          children: !(widget.getListLength() - 1 == counter)
+          children: !(widget.list.length - 1 == counter)
               ? [
                   Expanded(
                     child: Padding(
@@ -64,7 +62,7 @@ class _SpeechControllerState extends State<SpeechController> {
                         child: const Icon(Icons.arrow_forward_rounded),
                         onPressed: () {
                           _endPlaying(context);
-                          widget.onAction(context, counter);
+                          widget.onAction(widget.list[counter].getId());
                         },
                       ),
                     ),
@@ -73,13 +71,13 @@ class _SpeechControllerState extends State<SpeechController> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: MaterialButton(
-                        child: const Text('Weiter',
+                        child: const Text(
+                          'Weiter',
                         ),
                         onPressed: () {
-                          if (counter < widget.getListLength()) {
-                            _inc();
+                          if (counter < widget.list.length) {
                             _tts.stop();
-                            _tts.speak(widget.getString(counter));
+                            _inc();
                           }
                         },
                       ),
@@ -103,7 +101,10 @@ class _SpeechControllerState extends State<SpeechController> {
                         padding: const EdgeInsets.all(8.0),
                         child: MaterialButton(
                           child: const Icon(Icons.arrow_forward_rounded),
-                          onPressed: () => widget.onAction(context, counter),
+                          onPressed: () {
+                            widget.onAction(widget.list[counter].getId());
+                            Navigator.of(context).pop();
+                          },
                         )),
                   ),
                 ],

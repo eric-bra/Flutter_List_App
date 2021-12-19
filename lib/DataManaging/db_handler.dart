@@ -134,4 +134,13 @@ class DbHandler {
       whereArgs: [id],
     );
   }
+
+  Future<void> deleteToDo(int id) async {
+    final db = await instance.database;
+    await db.delete(
+      'todos',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
 }

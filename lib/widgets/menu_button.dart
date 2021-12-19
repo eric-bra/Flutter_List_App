@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:listapp/constants.dart';
 
-
 enum ButtonValues { delete }
 
 class MenuButton extends StatelessWidget {
@@ -13,17 +12,21 @@ class MenuButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PopupMenuButton<ButtonValues>(
-      onSelected: (value) => _onSelected(value),
-      itemBuilder: (context) => [
-        const PopupMenuItem<ButtonValues>(
-          value: ButtonValues.delete,
-          child: Text(
-            'Löschen',
-            style:  style,
+    return RotatedBox(
+      quarterTurns: 1,
+      child: PopupMenuButton<ButtonValues>(
+        icon: Icon(Icons.adaptive.more),
+        onSelected: (value) => _onSelected(value),
+        itemBuilder: (context) => [
+          const PopupMenuItem<ButtonValues>(
+            value: ButtonValues.delete,
+            child: Text(
+              'Löschen',
+              style: style,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

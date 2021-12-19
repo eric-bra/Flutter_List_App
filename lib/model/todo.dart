@@ -1,6 +1,8 @@
+import 'package:listapp/model/readable.dart';
+
 /// Represents a to Do with a unique Id, some content and a boolean wether it is checked or not.
 /// A to do  also belongs to a list of to dos.
-class ToDo {
+class ToDo extends Readable{
   final String content;
   bool checked;
   final int id;
@@ -21,4 +23,15 @@ class ToDo {
       'list_id': listId,
     };
   }
+
+  @override
+  String getText() {
+    return content;
+  }
+
+  @override
+  int getId() {
+    return id;
+  }
+
 }

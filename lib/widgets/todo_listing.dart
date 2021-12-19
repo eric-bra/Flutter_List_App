@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:listapp/DataManaging/db_handler.dart';
+import 'package:listapp/DataManaging/esense_handler.dart';
 import 'package:listapp/constants.dart';
 import 'package:listapp/model/todo.dart';
 import 'package:listapp/widgets/add_button.dart';
 import 'package:listapp/widgets/add_todo_dialog.dart';
-import 'package:listapp/widgets/speech_controller.dart';
+import 'package:listapp/widgets/speech_controllers/touch_speech_controller.dart';
 import 'package:listapp/widgets/todolisttile.dart';
+
+import 'speech_controllers/listings_movement_speech_controller.dart';
 
 class ToDoListing extends StatefulWidget {
   const ToDoListing({Key? key, required this.listId, required this.listName})
@@ -19,9 +22,17 @@ class ToDoListing extends StatefulWidget {
 }
 
 class _ToDoListingState extends State<ToDoListing> {
-  late List<ToDo> list;
-  bool _isLoading = false;
+  late List<ToDo> _list;
   final DbHandler _db = DbHandler.instance;
+  final _eSense = ESenseHandler.instance;
+
+  bool showChecked = false;
+
+  get list {
+    return showChecked
+        ? _list
+        : _list.where((element) => !element.checked).toList();
+  }
 
   @override
   void initState() {
@@ -30,24 +41,22 @@ class _ToDoListingState extends State<ToDoListing> {
   }
 
   _refreshList() async {
-    setState(() {
-      _isLoading = true;
-    });
-    list = await _db.todosByList(widget.listId);
-    setState(() {
-      _isLoading = false;
-    });
+    _list = await _db.todosByList(widget.listId);
   }
 
   void _onCheck(bool newValue, int id) {
-    _db.update(newValue, id);
+    setState(() {
+      _db.update(newValue, id);
+    });
     _refreshList();
   }
 
   void _addTodo(String name) {
-    if (name.isNotEmpty) {
-      _db.insertTodo(name, widget.listId);
-    }
+    setState(() {
+      if (name.isNotEmpty) {
+        _db.insertTodo(name, widget.listId);
+      }
+    });
     _refreshList();
   }
 
@@ -59,22 +68,28 @@ class _ToDoListingState extends State<ToDoListing> {
         });
   }
 
-  void _openList(BuildContext context, int counter) async {
-    if (counter < list.length) {
-      _onCheck(!list[counter].checked, list[counter].id);
-    }
+  void _action(int id) {
+    var e = _list.firstWhere((element) => element.id == id);
+    _onCheck(!e.checked, e.id);
   }
 
-  void _readListElements(BuildContext context) {
+  void _readListElements(BuildContext context) async {
     if (list.isEmpty) return;
+    print("Starting to connect");
+    bool movement = await _eSense.liveConnected;
+    if (!movement) {
+       movement = await _eSense.connectToESense();
+    }
+    print("Connection is $movement");
     showModalBottomSheet(
         context: context,
         builder: (context) {
-          return SpeechController(
-            onAction: _openList,
-            getListLength: () => list.length,
-            getString: (int counter) => list[counter].content,
-          );
+          return movement
+              ? ListingsMovementSpeechController(
+                  onAction: _action,
+                  list: list,
+                )
+              : TouchSpeechController(onAction: _action, list: list);
         });
   }
 
@@ -83,6 +98,13 @@ class _ToDoListingState extends State<ToDoListing> {
     return Scaffold(
       appBar: AppBar(
           actions: [
+            Switch(
+                value: showChecked,
+                onChanged: (changed) {
+                  setState(() {
+                    showChecked = changed;
+                  });
+                }),
             MaterialButton(
               child: Icon(
                 Icons.play_arrow_rounded,
@@ -95,20 +117,38 @@ class _ToDoListingState extends State<ToDoListing> {
             widget.listName,
             style: style,
           )),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: list.length,
-              itemBuilder: (_, int index) {
-                final item = list[index];
-                return ToDoListTile(todo: item, onCheck: _onCheck);
-              },
-            ),
+      body: buildList(),
       floatingActionButton: AddButton(
         onPressed: () {
           _createNewTodo(context);
         },
       ),
+    );
+  }
+
+  FutureBuilder<List<ToDo>> buildList() {
+    return FutureBuilder<List<ToDo>>(
+      future: _db.todosByList(widget.listId),
+      initialData: List.empty(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        List<ToDo> list = showChecked
+            ? snapshot.data!
+            : snapshot.data!.where((element) => !element.checked).toList();
+        return ListView.builder(
+          itemCount: list.length,
+          itemBuilder: (_, int index) {
+            final item = list[index];
+            _refreshList();
+            return ToDoListTile(
+                todo: item, onCheck: _onCheck, onLongPress: _db.deleteToDo);
+          },
+        );
+      },
     );
   }
 }

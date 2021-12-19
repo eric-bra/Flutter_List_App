@@ -42,7 +42,7 @@ class ListCard extends StatelessWidget {
               ),
             ),
           ),
-          MenuButton(onDelete: onDelete, id: list.id)
+          MenuButton(onDelete: onDelete, id: list.id),
         ]),
       ),
     );

@@ -10,12 +10,9 @@ class TtSHandler {
   static FlutterTts? _tts;
   TtSHandler._init();
 
-  String? _language;
-  String? _engine;
-  double _volume = 0.5;
-  double _pitch = 1.0;
-  double _rate = 0.5;
-  bool _isCurrentLanguageInstalled = false;
+  final double _volume = 0.5;
+  final double _pitch = 1.0;
+  final double _rate = 0.5;
   TtsState ttsState = TtsState.stopped;
 
   get isPlaying => ttsState == TtsState.playing;
@@ -43,72 +40,52 @@ class TtSHandler {
     }
 
     flutterTts.setStartHandler(() {
-        print("Playing");
-        ttsState = TtsState.playing;
+      ttsState = TtsState.playing;
     });
 
     flutterTts.setCompletionHandler(() {
-        print("Complete");
-        ttsState = TtsState.stopped;
+      ttsState = TtsState.stopped;
     });
 
     flutterTts.setCancelHandler(() {
-        print("Cancel");
-        ttsState = TtsState.stopped;
+      ttsState = TtsState.stopped;
     });
 
     if (isWeb || isIOS) {
       flutterTts.setPauseHandler(() {
-          print("Paused");
-          ttsState = TtsState.paused;
+        ttsState = TtsState.paused;
       });
 
       flutterTts.setContinueHandler(() {
-          print("Continued");
-          ttsState = TtsState.continued;
+        ttsState = TtsState.continued;
       });
     }
 
     flutterTts.setErrorHandler((msg) {
-        print("error: $msg");
-        ttsState = TtsState.stopped;
+      ttsState = TtsState.stopped;
     });
     flutterTts.setLanguage("de-DE");
     return flutterTts;
-  }
-
-  Future<dynamic> _getLanguages() async {
-    var ttS = await tts;
-    ttS.getLanguages;
-  }
-
-  Future<dynamic> _getEngines()  async {
-    var ttS = await tts;
-    ttS.getEngines;
   }
 
   Future _getDefaultEngine() async {
     var ttS = await tts;
     var engine = await ttS.getDefaultEngine;
     if (engine != null) {
-      print(engine);
     }
   }
 
   Future speak(String text) async {
-    print(text);
     var ttS = await tts;
-    print(text);
     await ttS.setVolume(_volume);
     await ttS.setSpeechRate(_rate);
     await ttS.setPitch(_pitch);
 
-      if (text.isNotEmpty) {
-        await ttS.awaitSpeakCompletion(true);
-        await ttS.speak(text);
-        print(text);
-      }
+    if (text.isNotEmpty) {
+      await ttS.awaitSpeakCompletion(true);
+      await ttS.speak(text);
     }
+  }
 
   Future stop() async {
     var ttS = await tts;
@@ -121,5 +98,4 @@ class TtSHandler {
     var result = await ttS.pause();
     if (result == 1) ttsState = TtsState.paused;
   }
-
 }

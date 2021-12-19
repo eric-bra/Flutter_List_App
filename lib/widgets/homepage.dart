@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:listapp/DataManaging/db_handler.dart';
+import 'package:listapp/DataManaging/esense_handler.dart';
 import 'package:listapp/constants.dart';
 import 'package:listapp/model/todo_list.dart';
 import 'package:listapp/widgets/add_button.dart';
-import 'package:listapp/widgets/speech_controller.dart';
+import 'package:listapp/widgets/speech_controllers/hp_movement_speech_controller.dart';
+import 'package:listapp/widgets/speech_controllers/touch_speech_controller.dart';
 import 'package:listapp/widgets/todo_listing.dart';
 import 'add_todo_dialog.dart';
 import 'list_card.dart';
@@ -17,8 +19,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool _isLoading = false;
   final DbHandler _db = DbHandler.instance;
+  final ESenseHandler _eSense = ESenseHandler.instance;
   late List<ToDoList> lists;
 
   @override
@@ -28,13 +30,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   _refreshLists() async {
-    setState(() {
-      _isLoading = true;
-    });
     lists = await _db.todoLists();
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   void _createNewTodoList(BuildContext context) {
@@ -55,29 +51,35 @@ class _HomePageState extends State<HomePage> {
     _refreshLists();
   }
 
-  void _openList(BuildContext context, int counter) async {
-    if (counter < lists.length) {
-      await Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => ToDoListing(
-            listId: lists[counter].id,
-            listName: lists[counter].name,
-          ),
+  void _openList(int id) async {
+    var element = lists.firstWhere((element) => element.getId() == id);
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ToDoListing(
+          listId: element.id,
+          listName: element.name,
         ),
-      );
-    }
+      ),
+    );
   }
 
-  void _readListElements(BuildContext context) {
+  void _readListElements(BuildContext context) async {
     if (lists.isEmpty) return;
+    print("Starting to connect");
+    bool movement = await _eSense.liveConnected;
+    if (!movement) {
+      movement = await _eSense.connectToESense();
+    }
+    print("Connection is $movement");
     showModalBottomSheet(
         context: context,
         builder: (context) {
-          return SpeechController(
-            onAction: _openList,
-            getListLength: () => lists.length,
-            getString: (int counter) => lists[counter].name,
-          );
+          return movement
+              ? HpMovementSpeechController(
+                  onAction: _openList,
+                  list: lists,
+                )
+              : TouchSpeechController(onAction: _openList, list: lists);
         });
   }
 
@@ -99,15 +101,21 @@ class _HomePageState extends State<HomePage> {
           style: style,
         ),
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : lists.isEmpty
-              ? const Center(
-                  child: Text(
-                  'Keine Listen',
-                  style: style,
-                ))
-              : buildLists(context),
+      body: FutureBuilder<List>(
+        future: _db.todoLists(),
+        initialData: null,
+        builder: (context, snapshot) {
+          return !snapshot.hasData
+              ? const Center(child: CircularProgressIndicator())
+              : snapshot.data!.isEmpty
+                  ? const Center(
+                      child: Text(
+                      'Keine Listen',
+                      style: style,
+                    ))
+                  : buildLists(context);
+        },
+      ),
       floatingActionButton: AddButton(
         onPressed: () {
           _createNewTodoList(context);
