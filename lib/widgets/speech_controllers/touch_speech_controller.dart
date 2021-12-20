@@ -102,8 +102,8 @@ class _TouchSpeechControllerState extends State<TouchSpeechController> {
                         child: MaterialButton(
                           child: const Icon(Icons.arrow_forward_rounded),
                           onPressed: () {
+                            _endPlaying(context);
                             widget.onAction(widget.list[counter].getId());
-                            Navigator.of(context).pop();
                           },
                         )),
                   ),

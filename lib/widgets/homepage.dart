@@ -42,12 +42,16 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _addTodoList(String name) {
-    _db.insertTodoList(name, DateTime.now().millisecondsSinceEpoch);
+    setState(() {
+      _db.insertTodoList(name, DateTime.now().millisecondsSinceEpoch);
+    });
     _refreshLists();
   }
 
   void _deleteTodoList(int id) {
-    _db.deleteToDoList(id);
+    setState(() {
+      _db.deleteToDoList(id);
+    });
     _refreshLists();
   }
 
@@ -101,19 +105,22 @@ class _HomePageState extends State<HomePage> {
           style: style,
         ),
       ),
-      body: FutureBuilder<List>(
+      body: FutureBuilder<List<ToDoList>>(
         future: _db.todoLists(),
-        initialData: null,
+        initialData: List.empty(),
         builder: (context, snapshot) {
-          return !snapshot.hasData
-              ? const Center(child: CircularProgressIndicator())
-              : snapshot.data!.isEmpty
-                  ? const Center(
-                      child: Text(
-                      'Keine Listen',
-                      style: style,
-                    ))
-                  : buildLists(context);
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.data!.isEmpty) {
+            return const Center(
+                child: Text(
+              'Keine Listen',
+              style: style,
+            ));
+          }
+          List<ToDoList> toDoLists = snapshot.data!;
+          return buildList(toDoLists, context);
         },
       ),
       floatingActionButton: AddButton(
@@ -124,26 +131,25 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget buildLists(context) => ListView.builder(
-      itemCount: lists.length,
-      itemBuilder: (context, index) {
-        final list = lists[index];
-        return GestureDetector(
-          onTap: () async {
-            await Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => ToDoListing(
-                listId: list.id,
-                listName: list.name,
+  ListView buildList(List<ToDoList> toDoLists, BuildContext context) =>
+      ListView.builder(
+          itemCount: toDoLists.length,
+          itemBuilder: (_, int index) {
+            final list = toDoLists[index];
+            return GestureDetector(
+              onTap: () async {
+                await Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ToDoListing(
+                    listId: list.id,
+                    listName: list.name,
+                  ),
+                ));
+              },
+              child: ListCard(
+                list: list,
+                index: index,
+                onDelete: _deleteTodoList,
               ),
-            ));
-
-            _refreshLists();
-          },
-          child: ListCard(
-            list: list,
-            index: index,
-            onDelete: _deleteTodoList,
-          ),
-        );
-      });
+            );
+          });
 }

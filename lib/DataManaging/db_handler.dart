@@ -9,7 +9,9 @@ class DbHandler {
 
   static Database? _db;
 
-  DbHandler._init();
+  DbHandler._init() {
+    database;
+  }
 
   Future<Database> get database async {
     if (_db != null) return _db!;

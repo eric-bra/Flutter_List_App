@@ -50,18 +50,18 @@ class ESenseHandler {
       }
     }
     print("connected");
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(milliseconds: 600));
     print("starting scan");
     await for (final event in _eSenseManager.sensorEvents) {
       if (event.gyro == null) {
         event_ = EventType.nothing;
-      } else if (event.gyro![2] > 7000 && event.gyro![1] > 3000) {
+      } else if (event.gyro![2] > 6000 && event.gyro![1] > 3000) {
         event_ = EventType.front;
         break;
-      } else if (event.gyro![0] > 3000) {
+      } else if (event.gyro![0] > 2000) {
         event_ = EventType.right;
         break;
-      } else if (event.gyro![0] < -3000) {
+      } else if (event.gyro![0] < -2000) {
         event_ = EventType.left;
         break;
       } else {

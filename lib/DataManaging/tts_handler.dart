@@ -10,7 +10,7 @@ class TtSHandler {
   static FlutterTts? _tts;
   TtSHandler._init();
 
-  final double _volume = 0.5;
+  final double _volume = 1.0;
   final double _pitch = 1.0;
   final double _rate = 0.5;
   TtsState ttsState = TtsState.stopped;
@@ -65,14 +65,19 @@ class TtSHandler {
       ttsState = TtsState.stopped;
     });
     flutterTts.setLanguage("de-DE");
+    flutterTts.setIosAudioCategory(IosTextToSpeechAudioCategory.playAndRecord, [
+      IosTextToSpeechAudioCategoryOptions.allowBluetooth,
+      IosTextToSpeechAudioCategoryOptions.allowBluetoothA2DP,
+      IosTextToSpeechAudioCategoryOptions.mixWithOthers,
+      IosTextToSpeechAudioCategoryOptions.allowAirPlay
+    ]);
     return flutterTts;
   }
 
   Future _getDefaultEngine() async {
     var ttS = await tts;
     var engine = await ttS.getDefaultEngine;
-    if (engine != null) {
-    }
+    if (engine != null) {}
   }
 
   Future speak(String text) async {
