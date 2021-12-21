@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:esense_flutter/esense.dart';
+import 'package:flutter/cupertino.dart';
 
 enum EventType { front, right, left, nothing, error}
 
@@ -12,12 +13,11 @@ class ESenseHandler {
   static final ESenseHandler instance = ESenseHandler._init();
   static final ESenseManager _eSenseManager = ESenseManager();
 
-  ESenseHandler._init() {
-    connectToESense();
-  }
+  ESenseHandler._init();
 
   Future<bool> get liveConnected async {
     connected = await _eSenseManager.isConnected();
+    connectionNotifier.value = connected;
     return connected;
   }
   get connectionEvents {
@@ -29,29 +29,22 @@ class ESenseHandler {
   }
 
   var connected = false;
+  ValueNotifier<bool> connectionNotifier = ValueNotifier(false);
 
-  Future<bool> connectToESense() async {
+  Future<void> connectToESense() async {
     await _eSenseManager.disconnect();
     var stream = _eSenseManager.connectionEvents.listen((event) {
       });
     await _eSenseManager.connect(eSenseName);
     stream.cancel();
-    await Future.delayed(const Duration(seconds: 2));
-    connected = await _eSenseManager.isConnected();
-    print("Connection is $connected");
-    return connected;
   }
 
   Future<EventType> determineEventType() async {
-    var event_;
+    EventType event_ = EventType.nothing;
     if (! await liveConnected) {
-      if (!await connectToESense()) {
         return EventType.error;
-      }
     }
-    print("connected");
     await Future.delayed(const Duration(milliseconds: 600));
-    print("starting scan");
     await for (final event in _eSenseManager.sensorEvents) {
       if (event.gyro == null) {
         event_ = EventType.nothing;
@@ -68,7 +61,6 @@ class ESenseHandler {
         event_ = EventType.nothing;
       }
     }
-    print(event_);
     return event_;
   }
 }

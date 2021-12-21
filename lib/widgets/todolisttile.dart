@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:listapp/DataManaging/db_handler.dart';
 import 'package:listapp/constants.dart';
 import 'package:listapp/model/todo.dart';
 

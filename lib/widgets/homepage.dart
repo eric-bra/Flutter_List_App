@@ -3,6 +3,7 @@ import 'package:listapp/DataManaging/db_handler.dart';
 import 'package:listapp/DataManaging/esense_handler.dart';
 import 'package:listapp/constants.dart';
 import 'package:listapp/model/todo_list.dart';
+import 'package:listapp/widgets/connection_indicator.dart';
 import 'package:listapp/widgets/add_button.dart';
 import 'package:listapp/widgets/speech_controllers/hp_movement_speech_controller.dart';
 import 'package:listapp/widgets/speech_controllers/touch_speech_controller.dart';
@@ -69,12 +70,7 @@ class _HomePageState extends State<HomePage> {
 
   void _readListElements(BuildContext context) async {
     if (lists.isEmpty) return;
-    print("Starting to connect");
     bool movement = await _eSense.liveConnected;
-    if (!movement) {
-      movement = await _eSense.connectToESense();
-    }
-    print("Connection is $movement");
     showModalBottomSheet(
         context: context,
         builder: (context) {
@@ -92,6 +88,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         actions: [
+          const ConnectionIndicator(),
           MaterialButton(
             child: Icon(
               Icons.play_arrow_rounded,

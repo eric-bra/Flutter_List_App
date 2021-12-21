@@ -28,7 +28,6 @@ class TtSHandler {
     if (_tts != null) return _tts!;
 
     _tts = initTts();
-    print("innitiert");
     return _tts!;
   }
 

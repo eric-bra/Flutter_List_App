@@ -4,8 +4,6 @@ import 'package:listapp/DataManaging/esense_handler.dart';
 import 'package:listapp/DataManaging/tts_handler.dart';
 import 'package:listapp/model/readable.dart';
 
-import 'listings_movement_speech_controller.dart';
-
 class HpMovementSpeechController extends StatefulWidget {
   const HpMovementSpeechController({
     Key? key,
@@ -21,7 +19,8 @@ class HpMovementSpeechController extends StatefulWidget {
       _HpMovementSpeechControllerState();
 }
 
-class _HpMovementSpeechControllerState extends State<HpMovementSpeechController> {
+class _HpMovementSpeechControllerState
+    extends State<HpMovementSpeechController> {
   final _tts = TtSHandler.instance;
   final _eSense = ESenseHandler.instance;
   int counter = 0;
@@ -54,40 +53,35 @@ class _HpMovementSpeechControllerState extends State<HpMovementSpeechController>
     return Column(
       children: [
         _eSense.connected
-            ? Text("Connected")
+            ? const Text("Verbunden")
             : StreamBuilder<ConnectionEvent>(
-          stream: ESenseManager().connectionEvents,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              switch (snapshot.data!.type) {
-                case ConnectionType.connected:
-                  return const Center(child: Text("Connected"));
-                case ConnectionType.unknown:
-                  return ReconnectButton(
-                    child: const Text("Connection: Unknown"),
-                    onPressed: _eSense.connectToESense,
-                  );
-                case ConnectionType.disconnected:
-                  return ReconnectButton(
-                    child: const Text("Connection: Disconnected"),
-                    onPressed: _eSense.connectToESense,
-                  );
-                case ConnectionType.device_found:
-                  return const Center(
-                      child: Text("Connection: Device found"));
-                case ConnectionType.device_not_found:
-                  return ReconnectButton(
-                    child: Text(
-                        "Connection: Device not found - ${_eSense.eSenseName}"),
-                    onPressed: _eSense.connectToESense,
-                  );
-              }
-            } else {
-              return const Center(
-                  child: Text("Waiting for Connection Data..."));
-            }
-          },
-        ),
+                stream: ESenseManager().connectionEvents,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    switch (snapshot.data!.type) {
+                      case ConnectionType.connected:
+                        return const Center(child: Text("Verbunden"));
+                      case ConnectionType.unknown:
+                        return const Center(
+                            child: Text("Verbindungsstatus unbekannt"));
+                      case ConnectionType.disconnected:
+                        return const Center(
+                          child: Text("Nicht verbunden"),
+                        );
+                      case ConnectionType.device_found:
+                        return const Center(child: Text("Gerät gefunden"));
+                      case ConnectionType.device_not_found:
+                        return Center(
+                          child: Text(
+                              "Gerät nicht gefunden- ${_eSense.eSenseName}"),
+                        );
+                    }
+                  } else {
+                    return const Center(
+                        child: Text("Warten auf Verbindungsdaten..."));
+                  }
+                },
+              ),
         Text(widget.list[counter].getText()),
       ],
     );
@@ -96,10 +90,8 @@ class _HpMovementSpeechControllerState extends State<HpMovementSpeechController>
   void _listenToHeadMovement() async {
     var listLength = widget.list.length;
     if (counter < listLength - 1) {
-      print("next");
       String title = widget.list[counter].getText();
       await _tts.speak(title);
-      print("ready");
       var action = await _eSense.determineEventType();
       switch (action) {
         case EventType.front:
@@ -110,7 +102,6 @@ class _HpMovementSpeechControllerState extends State<HpMovementSpeechController>
           _endPlaying(context);
           return;
         case EventType.right:
-          print("it is right");
           _inc();
           break;
         case EventType.nothing:
@@ -121,7 +112,6 @@ class _HpMovementSpeechControllerState extends State<HpMovementSpeechController>
       }
     } else if (counter == listLength - 1) {
       await _tts.speak(widget.list[counter].getText());
-      print("ready");
       var action = await _eSense.determineEventType();
       switch (action) {
         case EventType.front:
@@ -132,7 +122,6 @@ class _HpMovementSpeechControllerState extends State<HpMovementSpeechController>
           _endPlaying(context);
           return;
         case EventType.right:
-          print("it is right");
           _endPlaying(context);
           break;
         case EventType.nothing:

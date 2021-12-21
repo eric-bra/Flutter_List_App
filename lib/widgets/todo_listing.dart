@@ -8,6 +8,7 @@ import 'package:listapp/widgets/add_todo_dialog.dart';
 import 'package:listapp/widgets/speech_controllers/touch_speech_controller.dart';
 import 'package:listapp/widgets/todolisttile.dart';
 
+import 'connection_indicator.dart';
 import 'speech_controllers/listings_movement_speech_controller.dart';
 
 class ToDoListing extends StatefulWidget {
@@ -75,12 +76,7 @@ class _ToDoListingState extends State<ToDoListing> {
 
   void _readListElements(BuildContext context) async {
     if (list.isEmpty) return;
-    print("Starting to connect");
     bool movement = await _eSense.liveConnected;
-    if (!movement) {
-       movement = await _eSense.connectToESense();
-    }
-    print("Connection is $movement");
     showModalBottomSheet(
         context: context,
         builder: (context) {
@@ -98,6 +94,7 @@ class _ToDoListingState extends State<ToDoListing> {
     return Scaffold(
       appBar: AppBar(
           actions: [
+            const ConnectionIndicator(),
             Switch(
                 value: showChecked,
                 onChanged: (changed) {
@@ -145,7 +142,11 @@ class _ToDoListingState extends State<ToDoListing> {
             final item = list[index];
             _refreshList();
             return ToDoListTile(
-                todo: item, onCheck: _onCheck, onLongPress: _db.deleteToDo);
+                todo: item, onCheck: _onCheck, onLongPress: (val) {
+                  setState(() {
+                    _db.deleteToDo;
+                  });
+                });
           },
         );
       },
