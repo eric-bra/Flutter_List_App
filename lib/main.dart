@@ -21,8 +21,6 @@ void main() {
       mutex = true;
     }
     bool connected = await _eSense.liveConnected;
-    if(connected) {
-    }
     if (!connected && wasConnected) {
       _eSense.connectToESense();
     }

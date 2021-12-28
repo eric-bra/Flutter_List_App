@@ -1,7 +1,6 @@
 import 'package:listapp/model/readable.dart';
 
 ///List of to dos. It has a unique ID and a name.
-
 class ToDoList extends Readable{
   final String name;
   final int id;

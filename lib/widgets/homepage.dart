@@ -89,7 +89,8 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         actions: [
           const ConnectionIndicator(),
-          MaterialButton(
+          OutlinedButton(
+            style: OutlinedButton.styleFrom(side: BorderSide(color: ThemeData.dark().cardColor)),
             child: Icon(
               Icons.play_arrow_rounded,
               color: ThemeData.dark().indicatorColor,
@@ -97,9 +98,9 @@ class _HomePageState extends State<HomePage> {
             onPressed: () => _readListElements(context),
           ),
         ],
-        title: const Text(
+        title: Text(
           "Listen",
-          style: style,
+          style: style.merge(const TextStyle(fontSize: 24)),
         ),
       ),
       body: FutureBuilder<List<ToDoList>>(

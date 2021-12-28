@@ -5,12 +5,15 @@ import 'package:flutter_tts/flutter_tts.dart';
 
 enum TtsState { playing, stopped, paused, continued }
 
+/// Wraps the functionality provided by the TextToSpeech-Flutter-Library.
 class TtSHandler {
+  ///Instance of the handler class. This should always be used.
   static final TtSHandler instance = TtSHandler._init();
+
   static FlutterTts? _tts;
   TtSHandler._init();
 
-  final double _volume = 1.0;
+  final double _volume = 0.5;
   final double _pitch = 1.0;
   final double _rate = 0.5;
   TtsState ttsState = TtsState.stopped;
@@ -24,6 +27,8 @@ class TtSHandler {
   bool get isAndroid => !kIsWeb && Platform.isAndroid;
   bool get isWeb => kIsWeb;
 
+  /// Returns a instance of the FlutterTts class.
+  /// It guarantees that the instance is initialized.
   Future<FlutterTts> get tts async {
     if (_tts != null) return _tts!;
 
@@ -31,6 +36,7 @@ class TtSHandler {
     return _tts!;
   }
 
+  ///Initializes a FlutterTts-Instance.
   FlutterTts initTts() {
     var flutterTts = FlutterTts();
 
@@ -64,12 +70,6 @@ class TtSHandler {
       ttsState = TtsState.stopped;
     });
     flutterTts.setLanguage("de-DE");
-    flutterTts.setIosAudioCategory(IosTextToSpeechAudioCategory.playAndRecord, [
-      IosTextToSpeechAudioCategoryOptions.allowBluetooth,
-      IosTextToSpeechAudioCategoryOptions.allowBluetoothA2DP,
-      IosTextToSpeechAudioCategoryOptions.mixWithOthers,
-      IosTextToSpeechAudioCategoryOptions.allowAirPlay
-    ]);
     return flutterTts;
   }
 
@@ -79,7 +79,9 @@ class TtSHandler {
     if (engine != null) {}
   }
 
+  /// Reads out loud the given string.
   Future speak(String text) async {
+    print("trying to speak");
     var ttS = await tts;
     await ttS.setVolume(_volume);
     await ttS.setSpeechRate(_rate);
@@ -87,16 +89,20 @@ class TtSHandler {
 
     if (text.isNotEmpty) {
       await ttS.awaitSpeakCompletion(true);
+      print("speaking");
       await ttS.speak(text);
+      print("finished speaking");
     }
   }
 
+   /// Stops and discards the currently played TextToSpeech output.
   Future stop() async {
     var ttS = await tts;
     var result = await ttS.stop();
     if (result == 1) ttsState = TtsState.stopped;
   }
 
+ /// Pauses the currently played TextToSpeech output.
   Future pause() async {
     var ttS = await tts;
     var result = await ttS.pause();

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:listapp/DataManaging/esense_handler.dart';
 import 'package:listapp/DataManaging/tts_handler.dart';
 import 'package:listapp/model/readable.dart';
-
+/// Speech controller that is used in the context of the homepage of the app.
+/// Makes sure that after a onAction call,
+/// the Speech controller is popped from the widget stack.
 class HpMovementSpeechController extends StatefulWidget {
   const HpMovementSpeechController({
     Key? key,
@@ -11,6 +13,7 @@ class HpMovementSpeechController extends StatefulWidget {
     required this.list,
   }) : super(key: key);
 
+  /// Function that should be called when the user nods.
   final void Function(int id) onAction;
   final List<Readable> list;
 

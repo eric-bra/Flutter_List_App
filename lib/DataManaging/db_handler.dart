@@ -2,24 +2,30 @@ import 'package:listapp/model/todo.dart';
 import 'package:listapp/model/todo_list.dart';
 import 'dart:async';
 import 'package:path/path.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
+/// Wraps plugins that handles persistence.
 class DbHandler {
+  ///Instance of the Database handler which is to be always used.
   static final DbHandler instance = DbHandler._init();
 
+  /// Actual Database instance.
   static Database? _db;
 
+  /// initiates the database handler.
   DbHandler._init() {
     database;
   }
 
+  /// Returns the database. Using this makes sure that the database has been initialized.
   Future<Database> get database async {
     if (_db != null) return _db!;
 
-    _db = await _initDB();
-    return _db!;
+    _db = await _initDB();return _db!;
   }
 
+  /// Initializes the database and creates tables if necessary.
   Future<Database> _initDB() async {
     return await openDatabase(
       join(await getDatabasesPath(), 'todo_database.db'),
@@ -35,11 +41,7 @@ class DbHandler {
     );
   }
 
-  static final DbHandler _inst = DbHandler._internal();
-  DbHandler._internal();
-
-  factory DbHandler() => _inst;
-
+  ///Returns all todos in the database.
   Future<List<ToDo>> todos() async {
     // Get a reference to the database.
     final db = await instance.database;
@@ -56,6 +58,7 @@ class DbHandler {
     });
   }
 
+  /// Returns all Todolists in the Database.
   Future<List<ToDoList>> todoLists() async {
     // Get a reference to the database.
     final db = await instance.database;
@@ -70,6 +73,7 @@ class DbHandler {
     });
   }
 
+  /// Returns all todos that belong to a certain list.
   Future<List<ToDo>> todosByList(int listId) async {
     // Get a reference to the database.
     final db = await instance.database;
@@ -88,6 +92,7 @@ class DbHandler {
     });
   }
 
+  /// Inserts a new toDoElement into the data base.
   Future<void> insertTodo(String name, int listId) async {
     ToDo toDo = ToDo(
         content: name,
@@ -101,6 +106,7 @@ class DbHandler {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
+  /// Inserts a new ToDoList into the Database.
   Future<void> insertTodoList(String name, int listId) async {
     ToDoList list = ToDoList(
         name: name,
@@ -113,6 +119,7 @@ class DbHandler {
     );
   }
 
+  /// Updates the checked parameter of the ToDoElement with the given id.
   Future<void> update(bool newValue, int id) async {
     final db = await instance.database;
     await db.update(
@@ -123,6 +130,8 @@ class DbHandler {
     );
   }
 
+  /// Deletes the Todolist with the given ID.
+  /// Also makes sure that all ToDoElements that belongs to the List are deleted as well.
   Future<void> deleteToDoList(int id) async {
     final db = await instance.database;
     await db.delete(
@@ -137,6 +146,7 @@ class DbHandler {
     );
   }
 
+  /// Deletes the given ToDoElement from the Database.
   Future<void> deleteToDo(int id) async {
     final db = await instance.database;
     await db.delete(
