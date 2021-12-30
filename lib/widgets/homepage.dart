@@ -6,7 +6,7 @@ import 'package:listapp/model/todo_list.dart';
 import 'package:listapp/widgets/connection_indicator.dart';
 import 'package:listapp/widgets/add_button.dart';
 import 'package:listapp/widgets/speech_controllers/hp_movement_speech_controller.dart';
-import 'package:listapp/widgets/speech_controllers/touch_speech_controller.dart';
+import 'package:listapp/widgets/speech_controllers/hp_touch_speech_controller.dart';
 import 'package:listapp/widgets/todo_listing.dart';
 import 'add_todo_dialog.dart';
 import 'list_card.dart';
@@ -79,7 +79,7 @@ class _HomePageState extends State<HomePage> {
                   onAction: _openList,
                   list: lists,
                 )
-              : TouchSpeechController(onAction: _openList, list: lists);
+              : HpTouchSpeechController(onAction: _openList, list: lists);
         });
   }
 
@@ -89,13 +89,17 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         actions: [
           const ConnectionIndicator(),
-          OutlinedButton(
-            style: OutlinedButton.styleFrom(side: BorderSide(color: ThemeData.dark().cardColor)),
-            child: Icon(
-              Icons.play_arrow_rounded,
-              color: ThemeData.dark().indicatorColor,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: ThemeData.dark().cardColor)),
+              child: Icon(
+                Icons.play_arrow_rounded,
+                color: ThemeData.dark().indicatorColor,
+              ),
+              onPressed: () => _readListElements(context),
             ),
-            onPressed: () => _readListElements(context),
           ),
         ],
         title: Text(

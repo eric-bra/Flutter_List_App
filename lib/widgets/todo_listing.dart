@@ -5,7 +5,7 @@ import 'package:listapp/constants.dart';
 import 'package:listapp/model/todo.dart';
 import 'package:listapp/widgets/add_button.dart';
 import 'package:listapp/widgets/add_todo_dialog.dart';
-import 'package:listapp/widgets/speech_controllers/touch_speech_controller.dart';
+import 'package:listapp/widgets/speech_controllers/listings_touch_speech_controller.dart';
 import 'package:listapp/widgets/todolisttile.dart';
 
 import 'connection_indicator.dart';
@@ -85,7 +85,7 @@ class _ToDoListingState extends State<ToDoListing> {
                   onAction: _action,
                   list: list,
                 )
-              : TouchSpeechController(onAction: _action, list: list);
+              : ListingsTouchSpeechController(onAction: _action, list: list);
         });
   }
 
