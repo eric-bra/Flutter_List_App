@@ -32,12 +32,12 @@ class TtSHandler {
   Future<FlutterTts> get tts async {
     if (_tts != null) return _tts!;
 
-    _tts = initTts();
+    _tts = await initTts();
     return _tts!;
   }
 
   ///Initializes a FlutterTts-Instance.
-  FlutterTts initTts() {
+  Future<FlutterTts> initTts() async {
     var flutterTts = FlutterTts();
 
     if (isAndroid) {
@@ -70,6 +70,13 @@ class TtSHandler {
       ttsState = TtsState.stopped;
     });
     flutterTts.setLanguage("de-DE");
+    await flutterTts.setIosAudioCategory(IosTextToSpeechAudioCategory.playback,
+        [
+          IosTextToSpeechAudioCategoryOptions.allowBluetooth,
+          IosTextToSpeechAudioCategoryOptions.allowBluetoothA2DP,
+        ],
+        IosTextToSpeechAudioMode.voicePrompt
+    );
     return flutterTts;
   }
 
