@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:listapp/DataManaging/tts_handler.dart';
 import 'package:listapp/model/readable.dart';
+import 'package:listapp/widgets/speech_controllers/speech_controller.dart';
 
-class ListingsTouchSpeechController extends StatefulWidget {
-  const ListingsTouchSpeechController(
-      {Key? key, required this.onAction, required this.list})
-      : super(key: key);
-
-  final void Function(int id) onAction;
-  final List<Readable> list;
+class ListingsTouchSpeechController extends SpeechController {
+  const ListingsTouchSpeechController({
+    Key? key,
+    required void Function(int id) onAction,
+    required List<Readable> list,
+  }) : super(key: key, onAction: onAction, list: list);
 
   @override
   _ListingsTouchSpeechControllerState createState() => _ListingsTouchSpeechControllerState();

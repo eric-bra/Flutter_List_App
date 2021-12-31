@@ -3,16 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:listapp/DataManaging/esense_handler.dart';
 import 'package:listapp/DataManaging/tts_handler.dart';
 import 'package:listapp/model/readable.dart';
+import 'package:listapp/widgets/speech_controllers/speech_controller.dart';
 
-class ListingsMovementSpeechController extends StatefulWidget {
+class ListingsMovementSpeechController extends SpeechController {
   const ListingsMovementSpeechController({
     Key? key,
-    required this.onAction,
-    required this.list,
-  }) : super(key: key);
-
-  final void Function(int id) onAction;
-  final List<Readable> list;
+    required void Function(int id) onAction,
+    required List<Readable> list,
+  }) : super(key: key, onAction: onAction, list: list);
 
   @override
   _ListingsMovementSpeechControllerState createState() =>
@@ -50,38 +48,51 @@ class _ListingsMovementSpeechControllerState extends State<ListingsMovementSpeec
 
   Column buildBudInterface(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        _eSense.connected
-            ? const Text("Verbunden")
-            : StreamBuilder<ConnectionEvent>(
-          stream: ESenseManager().connectionEvents,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              switch (snapshot.data!.type) {
-                case ConnectionType.connected:
-                  return const Center(child: Text("Verbunden"));
-                case ConnectionType.unknown:
-                  return const Center(
-                      child: Text("Verbindungsstatus unbekannt"));
-                case ConnectionType.disconnected:
-                  return const Center(
-                    child: Text("Nicht verbunden"),
-                  );
-                case ConnectionType.device_found:
-                  return const Center(child: Text("Gerät gefunden"));
-                case ConnectionType.device_not_found:
-                  return Center(
-                    child: Text(
-                        "Gerät nicht gefunden- ${_eSense.eSenseName}"),
-                  );
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+          child: _eSense.connected
+              ? const Text("Verbunden")
+              : StreamBuilder<ConnectionEvent>(
+            stream: ESenseManager().connectionEvents,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                switch (snapshot.data!.type) {
+                  case ConnectionType.connected:
+                    return const Center(child: Text("Verbunden"));
+                  case ConnectionType.unknown:
+                    return const Center(
+                        child: Text("Verbindungsstatus unbekannt"));
+                  case ConnectionType.disconnected:
+                    return const Center(
+                      child: Text("Nicht verbunden"),
+                    );
+                  case ConnectionType.device_found:
+                    return const Center(child: Text("Gerät gefunden"));
+                  case ConnectionType.device_not_found:
+                    return Center(
+                      child: Text(
+                          "Gerät nicht gefunden- ${_eSense.eSenseName}"),
+                    );
+                }
+              } else {
+                return const Center(
+                    child: Text("Warten auf Verbindungsdaten..."));
               }
-            } else {
-              return const Center(
-                  child: Text("Warten auf Verbindungsdaten..."));
-            }
-          },
+            },
+          ),
         ),
-        Text(widget.list[counter].getText()),
+        const Divider(
+          height: 3,
+          thickness: 2,
+          indent: 7,
+          endIndent: 7,
+        ),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(widget.list[counter].getText()),
+        )
       ],
     );
   }
