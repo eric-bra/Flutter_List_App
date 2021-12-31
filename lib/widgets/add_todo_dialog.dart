@@ -22,7 +22,7 @@ class _AddToDoDialogState extends State<AddToDoDialog> {
           children: [
             Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(16),
                   child: TextField(
                     onChanged: (text) =>
                         setState(() {
@@ -35,7 +35,7 @@ class _AddToDoDialogState extends State<AddToDoDialog> {
                   ),
                 )),
             Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(16),
                 child: AddButton(onPressed: () {
                   widget.onFinish(_val);
                   Navigator.of(context).pop();

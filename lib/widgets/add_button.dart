@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Widget which represents a FLoatingActionButton with an add-Icon.
+/// Widget which represents a FloatingActionButton with an add-Icon.
 class AddButton extends StatelessWidget {
   const AddButton({Key? key, required this.onPressed}) : super(key: key);
 

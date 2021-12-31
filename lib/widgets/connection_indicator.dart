@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:listapp/DataManaging/esense_handler.dart';
 
@@ -33,9 +32,11 @@ class _ConnectionIndicatorState extends State<ConnectionIndicator> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(padding: const EdgeInsets.all(8),
+    return Padding(
+      padding: const EdgeInsets.all(8),
       child: OutlinedButton(
-        style: OutlinedButton.styleFrom(side: BorderSide(color: ThemeData.dark().cardColor)),
+          style: OutlinedButton.styleFrom(
+              side: BorderSide(color: ThemeData.dark().cardColor)),
           onPressed: _changeName,
           child: ValueListenableBuilder<bool>(
               valueListenable: _eSense.connectionNotifier,
