@@ -3,6 +3,8 @@ import 'package:listapp/DataManaging/tts_handler.dart';
 import 'package:listapp/model/readable.dart';
 import 'package:listapp/widgets/speech_controllers/speech_controller.dart';
 
+import '../WidgetFactories.dart';
+
 class ListingsTouchSpeechController extends SpeechController {
   const ListingsTouchSpeechController({
     Key? key,
@@ -11,10 +13,12 @@ class ListingsTouchSpeechController extends SpeechController {
   }) : super(key: key, onAction: onAction, list: list);
 
   @override
-  _ListingsTouchSpeechControllerState createState() => _ListingsTouchSpeechControllerState();
+  _ListingsTouchSpeechControllerState createState() =>
+      _ListingsTouchSpeechControllerState();
 }
 
-class _ListingsTouchSpeechControllerState extends State<ListingsTouchSpeechController> {
+class _ListingsTouchSpeechControllerState
+    extends State<ListingsTouchSpeechController> {
   int counter = 0;
 
   @override
@@ -38,78 +42,41 @@ class _ListingsTouchSpeechControllerState extends State<ListingsTouchSpeechContr
     _tts.speak(widget.list[counter].getText());
   }
 
+  void _dec() {
+    if (counter <= 0) return;
+    setState(() {
+      counter--;
+    });
+    _tts.speak(widget.list[counter].getText());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: MediaQuery.of(context).viewInsets,
-        child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+            padding: const EdgeInsets.fromLTRB(8, 0, 8, 16),
             child: Row(
-              children: !(widget.list.length - 1 == counter)
-                  ? [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: MaterialButton(
-                        child: const Icon(
-                          Icons.dangerous_rounded,
-                        ),
-                        onPressed: () => _endPlaying(context)),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: MaterialButton(
-                      child: const Icon(Icons.arrow_forward_rounded),
-                      onPressed: () {
-                        widget.onAction(widget.list[counter].getId());
-                        _inc();
-                      },
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: MaterialButton(
-                      child: const Text(
-                        'Weiter',
-                      ),
-                      onPressed: () {
-                        if (counter < widget.list.length) {
-                          _tts.stop();
-                          _inc();
-                        }
-                      },
-                    ),
-                  ),
-                ),
-              ]
-                  : [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: MaterialButton(
-                      child: const Icon(
-                        Icons.dangerous_rounded,
-                      ),
-                      onPressed: () => _endPlaying(context),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: MaterialButton(
-                        child: const Icon(Icons.arrow_forward_rounded),
-                        onPressed: () {
-                          _endPlaying(context);
-                          widget.onAction(widget.list[counter].getId());
-                        },
-                      )),
-                ),
-              ],
-            )));
+              children: _widgets(),
+            ));
+  }
+
+  List<Widget> _widgets() {
+    List<Widget> list = [];
+    var back = ButtonFactory.button(const Icon(Icons.arrow_back_rounded), _dec);
+    var check = ButtonFactory.button(const Icon(Icons.check_rounded), () {
+      widget.onAction(widget.list[counter].getId());
+      if (counter < widget.list.length - 1) _inc();
+    });
+    var next =
+        ButtonFactory.button(const Icon(Icons.arrow_forward_rounded), _inc);
+    if (counter > 0) {
+      list.add(back);
+    }
+    if (widget.list.isNotEmpty) {
+      list.add(check);
+    }
+    if (counter < widget.list.length - 1) {
+      list.add(next);
+    }
+    return list;
   }
 }

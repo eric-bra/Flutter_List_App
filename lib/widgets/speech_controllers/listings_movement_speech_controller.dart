@@ -17,7 +17,8 @@ class ListingsMovementSpeechController extends SpeechController {
       _ListingsMovementSpeechControllerState();
 }
 
-class _ListingsMovementSpeechControllerState extends State<ListingsMovementSpeechController> {
+class _ListingsMovementSpeechControllerState
+    extends State<ListingsMovementSpeechController> {
   final _tts = TtSHandler.instance;
   final _eSense = ESenseHandler.instance;
   int counter = 0;
@@ -41,6 +42,15 @@ class _ListingsMovementSpeechControllerState extends State<ListingsMovementSpeec
     _listenToHeadMovement();
   }
 
+  void _dec() {
+    if (counter >= 1) {
+      setState(() {
+        counter--;
+      });
+      _listenToHeadMovement();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return buildBudInterface(context);
@@ -55,33 +65,33 @@ class _ListingsMovementSpeechControllerState extends State<ListingsMovementSpeec
           child: _eSense.connected
               ? const Text("Verbunden")
               : StreamBuilder<ConnectionEvent>(
-            stream: ESenseManager().connectionEvents,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                switch (snapshot.data!.type) {
-                  case ConnectionType.connected:
-                    return const Center(child: Text("Verbunden"));
-                  case ConnectionType.unknown:
-                    return const Center(
-                        child: Text("Verbindungsstatus unbekannt"));
-                  case ConnectionType.disconnected:
-                    return const Center(
-                      child: Text("Nicht verbunden"),
-                    );
-                  case ConnectionType.device_found:
-                    return const Center(child: Text("Gerät gefunden"));
-                  case ConnectionType.device_not_found:
-                    return Center(
-                      child: Text(
-                          "Gerät nicht gefunden- ${_eSense.eSenseName}"),
-                    );
-                }
-              } else {
-                return const Center(
-                    child: Text("Warten auf Verbindungsdaten..."));
-              }
-            },
-          ),
+                  stream: ESenseManager().connectionEvents,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      switch (snapshot.data!.type) {
+                        case ConnectionType.connected:
+                          return const Center(child: Text("Verbunden"));
+                        case ConnectionType.unknown:
+                          return const Center(
+                              child: Text("Verbindungsstatus unbekannt"));
+                        case ConnectionType.disconnected:
+                          return const Center(
+                            child: Text("Nicht verbunden"),
+                          );
+                        case ConnectionType.device_found:
+                          return const Center(child: Text("Gerät gefunden"));
+                        case ConnectionType.device_not_found:
+                          return Center(
+                            child: Text(
+                                "Gerät nicht gefunden- ${_eSense.eSenseName}"),
+                          );
+                      }
+                    } else {
+                      return const Center(
+                          child: Text("Warten auf Verbindungsdaten..."));
+                    }
+                  },
+                ),
         ),
         const Divider(
           height: 3,
@@ -99,49 +109,29 @@ class _ListingsMovementSpeechControllerState extends State<ListingsMovementSpeec
 
   void _listenToHeadMovement() async {
     var listLength = widget.list.length;
-    if (counter < listLength - 1) {
-      String title = widget.list[counter].getText();
-      await _tts.speak(title);
-      var action = await _eSense.determineEventType();
-      switch (action) {
-        case EventType.front:
-          widget.onAction(widget.list[counter].getId());
-          _inc();
-          return;
-        case EventType.left:
-          _endPlaying(context);
-          return;
-        case EventType.right:
-          _inc();
-          break;
-        case EventType.nothing:
-          return;
-        case EventType.error:
-          _endPlaying(context);
-          return;
-      }
-    } else if (counter == listLength - 1) {
-      await _tts.speak(widget.list[counter].getText());
-      var action = await _eSense.determineEventType();
-      switch (action) {
-        case EventType.front:
-          _endPlaying(context);
-          widget.onAction(widget.list[counter].getId());
-          return;
-        case EventType.left:
-          _endPlaying(context);
-          return;
-        case EventType.right:
-          _endPlaying(context);
-          break;
-        case EventType.nothing:
-          return;
-        case EventType.error:
-          _endPlaying(context);
-          return;
-      }
-    } else {
+    if (listLength == 0 || counter < 0 || counter >= listLength) {
       _endPlaying(context);
+    }
+    String title = widget.list[counter].getText();
+    await _tts.speak(title);
+    var action = await _eSense.determineEventType();
+    switch (action) {
+      case EventType.front:
+        widget.onAction(widget.list[counter].getId());
+        counter < listLength - 1 ? _inc() : _listenToHeadMovement();
+        return;
+      case EventType.left:
+        counter == 0 ? _endPlaying(context) : _dec();
+        return;
+      case EventType.right:
+        counter == listLength - 1 ? _endPlaying(context) : _inc();
+        break;
+      case EventType.nothing:
+        _listenToHeadMovement();
+        return;
+      case EventType.error:
+        _endPlaying(context);
+        return;
     }
   }
 }

@@ -45,6 +45,14 @@ class _HpMovementSpeechControllerState
     _listenToHeadMovement();
   }
 
+  void _dec() {
+    if(counter <= 0) return;
+    setState(() {
+      counter--;
+    });
+    _listenToHeadMovement();
+  }
+
   @override
   Widget build(BuildContext context) {
     return buildBudInterface(context);
@@ -103,49 +111,29 @@ class _HpMovementSpeechControllerState
 
   void _listenToHeadMovement() async {
     var listLength = widget.list.length;
-    if (counter < listLength - 1) {
-      String title = widget.list[counter].getText();
-      await _tts.speak(title);
-      var action = await _eSense.determineEventType();
-      switch (action) {
-        case EventType.front:
-          _endPlaying(context);
-          widget.onAction(widget.list[counter].getId());
-          return;
-        case EventType.left:
-          _endPlaying(context);
-          return;
-        case EventType.right:
-          _inc();
-          break;
-        case EventType.nothing:
-          return;
-        case EventType.error:
-          _endPlaying(context);
-          return;
-      }
-    } else if (counter == listLength - 1) {
-      await _tts.speak(widget.list[counter].getText());
-      var action = await _eSense.determineEventType();
-      switch (action) {
-        case EventType.front:
-          _endPlaying(context);
-          widget.onAction(widget.list[counter].getId());
-          return;
-        case EventType.left:
-          _endPlaying(context);
-          return;
-        case EventType.right:
-          _endPlaying(context);
-          break;
-        case EventType.nothing:
-          return;
-        case EventType.error:
-          _endPlaying(context);
-          return;
-      }
-    } else {
+    if (listLength == 0 || counter < 0 || counter >= listLength) {
       _endPlaying(context);
+    }
+    String title = widget.list[counter].getText();
+    await _tts.speak(title);
+    var action = await _eSense.determineEventType();
+    switch (action) {
+      case EventType.front:
+        _endPlaying(context);
+        widget.onAction(widget.list[counter].getId());
+        return;
+      case EventType.left:
+        counter == 0? _endPlaying(context): _dec();
+        return;
+      case EventType.right:
+        counter == listLength - 1? _endPlaying(context): _inc();
+        break;
+      case EventType.nothing:
+        _listenToHeadMovement();
+        return;
+      case EventType.error:
+        _endPlaying(context);
+        return;
     }
   }
 }
