@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:listapp/DataManaging/tts_handler.dart';
 import 'package:listapp/model/readable.dart';
 import 'package:listapp/widgets/speech_controllers/speech_controller.dart';
+
 import '../WidgetFactories.dart';
 
 class HpTouchSpeechController extends SpeechController {
@@ -51,10 +52,10 @@ class _HpTouchSpeechControllerState extends State<HpTouchSpeechController> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-            padding: const EdgeInsets.fromLTRB(8, 0, 8, 16),
-            child: Row(
-              children: _widgets(),
-            ));
+        padding: const EdgeInsets.fromLTRB(8, 0, 8, 16),
+        child: Row(
+          children: _widgets(),
+        ));
   }
 
   List<Widget> _widgets() {
@@ -64,7 +65,8 @@ class _HpTouchSpeechControllerState extends State<HpTouchSpeechController> {
       _endPlaying(context);
       widget.onAction(widget.list[counter].getId());
     });
-    var next = ButtonFactory.button(const Icon(Icons.arrow_forward_rounded), _inc);
+    var next =
+        ButtonFactory.button(const Icon(Icons.arrow_forward_rounded), _inc);
     if (counter > 0) {
       list.add(back);
     }

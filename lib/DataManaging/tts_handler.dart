@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io' show Platform;
+
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_tts/flutter_tts.dart';
 
@@ -11,6 +12,7 @@ class TtSHandler {
   static final TtSHandler instance = TtSHandler._init();
 
   static FlutterTts? _tts;
+
   TtSHandler._init();
 
   final double _volume = 0.5;
@@ -19,12 +21,17 @@ class TtSHandler {
   TtsState ttsState = TtsState.stopped;
 
   get isPlaying => ttsState == TtsState.playing;
+
   get isStopped => ttsState == TtsState.stopped;
+
   get isPaused => ttsState == TtsState.paused;
+
   get isContinued => ttsState == TtsState.continued;
 
   bool get isIOS => !kIsWeb && Platform.isIOS;
+
   bool get isAndroid => !kIsWeb && Platform.isAndroid;
+
   bool get isWeb => kIsWeb;
 
   /// Returns a instance of the FlutterTts class.
@@ -70,13 +77,13 @@ class TtSHandler {
       ttsState = TtsState.stopped;
     });
     flutterTts.setLanguage("de-DE");
-    await flutterTts.setIosAudioCategory(IosTextToSpeechAudioCategory.playback,
+    await flutterTts.setIosAudioCategory(
+        IosTextToSpeechAudioCategory.playback,
         [
           IosTextToSpeechAudioCategoryOptions.allowBluetooth,
           IosTextToSpeechAudioCategoryOptions.allowBluetoothA2DP,
         ],
-        IosTextToSpeechAudioMode.voicePrompt
-    );
+        IosTextToSpeechAudioMode.voicePrompt);
     return flutterTts;
   }
 
@@ -102,14 +109,14 @@ class TtSHandler {
     }
   }
 
-   /// Stops and discards the currently played TextToSpeech output.
+  /// Stops and discards the currently played TextToSpeech output.
   Future stop() async {
     var ttS = await tts;
     var result = await ttS.stop();
     if (result == 1) ttsState = TtsState.stopped;
   }
 
- /// Pauses the currently played TextToSpeech output.
+  /// Pauses the currently played TextToSpeech output.
   Future pause() async {
     var ttS = await tts;
     var result = await ttS.pause();

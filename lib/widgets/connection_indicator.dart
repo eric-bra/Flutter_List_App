@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:listapp/DataManaging/esense_handler.dart';
 
+import '../cutom_theme.dart';
 import 'add_button.dart';
 
 class ConnectionIndicator extends StatefulWidget {
@@ -36,7 +37,7 @@ class _ConnectionIndicatorState extends State<ConnectionIndicator> {
       padding: const EdgeInsets.all(8),
       child: OutlinedButton(
           style: OutlinedButton.styleFrom(
-              side: BorderSide(color: ThemeData.dark().cardColor)),
+              side: BorderSide(color: CustomTheme.borderColor(context))),
           onPressed: _changeName,
           child: ValueListenableBuilder<bool>(
               valueListenable: _eSense.connectionNotifier,
@@ -60,6 +61,7 @@ class ChangeNameDialog extends StatefulWidget {
 
 class _ChangeNameDialogState extends State<ChangeNameDialog> {
   String _val = "";
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -69,7 +71,13 @@ class _ChangeNameDialogState extends State<ChangeNameDialog> {
           children: [
             Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                child: Text("Aktueller Kopfhörer: ${widget.name}")),
+                child: Text(
+                  "Aktueller Kopfhörer: ${widget.name}",
+                  style: Theme.of(context).textTheme.bodyText1?.merge(TextStyle(
+                      fontSize: (Theme.of(context).textTheme.bodyText1 != null)
+                          ? Theme.of(context).textTheme.bodyText1!.fontSize! + 2
+                          : null)),
+                )),
             const Divider(
               height: 3,
               thickness: 2,

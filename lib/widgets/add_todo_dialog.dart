@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:listapp/constants.dart';
+
 import 'add_button.dart';
 
 ///Represents a Dialog with a text field and a Add-Button.
@@ -14,6 +14,7 @@ class AddToDoDialog extends StatefulWidget {
 
 class _AddToDoDialogState extends State<AddToDoDialog> {
   String _val = "";
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -22,18 +23,17 @@ class _AddToDoDialogState extends State<AddToDoDialog> {
           children: [
             Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: TextField(
-                    onChanged: (text) =>
-                        setState(() {
-                      _val = text;
-                    }),
-                    onSubmitted: (text) {
-                      _val = text;
-                      },
-                    style: style,
-                  ),
-                )),
+              padding: const EdgeInsets.all(16),
+              child: TextField(
+                onChanged: (text) => setState(() {
+                  _val = text;
+                }),
+                onSubmitted: (text) {
+                  _val = text;
+                },
+                style: const TextStyle(fontSize: 20),
+              ),
+            )),
             Padding(
                 padding: const EdgeInsets.all(16),
                 child: AddButton(onPressed: () {

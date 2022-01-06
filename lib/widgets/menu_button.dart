@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:listapp/constants.dart';
 
 enum ButtonValues { delete }
 
@@ -18,11 +17,14 @@ class MenuButton extends StatelessWidget {
         icon: Icon(Icons.adaptive.more),
         onSelected: (value) => _onSelected(value),
         itemBuilder: (context) => [
-          const PopupMenuItem<ButtonValues>(
+          PopupMenuItem<ButtonValues>(
             value: ButtonValues.delete,
             child: Text(
               'Löschen',
-              style: style,
+              style: Theme.of(context).textTheme.button?.merge(TextStyle(
+                  fontSize: (Theme.of(context).textTheme.button != null)
+                      ? Theme.of(context).textTheme.button!.fontSize! + 2
+                      : null)),
             ),
           ),
         ],

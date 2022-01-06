@@ -46,7 +46,7 @@ class _HpMovementSpeechControllerState
   }
 
   void _dec() {
-    if(counter <= 0) return;
+    if (counter <= 0) return;
     setState(() {
       counter--;
     });
@@ -123,10 +123,10 @@ class _HpMovementSpeechControllerState
         widget.onAction(widget.list[counter].getId());
         return;
       case EventType.left:
-        counter == 0? _endPlaying(context): _dec();
+        counter == 0 ? _endPlaying(context) : _dec();
         return;
       case EventType.right:
-        counter == listLength - 1? _endPlaying(context): _inc();
+        counter == listLength - 1 ? _endPlaying(context) : _inc();
         break;
       case EventType.nothing:
         _listenToHeadMovement();

@@ -28,11 +28,6 @@ class _ListingsTouchSpeechControllerState
     _tts.speak(widget.list[counter].getText());
   }
 
-  void _endPlaying(BuildContext context) {
-    _tts.stop();
-    Navigator.of(context).pop();
-  }
-
   final _tts = TtSHandler.instance;
 
   void _inc() {
@@ -53,10 +48,10 @@ class _ListingsTouchSpeechControllerState
   @override
   Widget build(BuildContext context) {
     return Padding(
-            padding: const EdgeInsets.fromLTRB(8, 0, 8, 16),
-            child: Row(
-              children: _widgets(),
-            ));
+        padding: const EdgeInsets.fromLTRB(8, 0, 8, 16),
+        child: Row(
+          children: _widgets(),
+        ));
   }
 
   List<Widget> _widgets() {

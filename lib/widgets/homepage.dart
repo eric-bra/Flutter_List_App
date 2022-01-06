@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:listapp/DataManaging/db_handler.dart';
 import 'package:listapp/DataManaging/esense_handler.dart';
-import 'package:listapp/constants.dart';
 import 'package:listapp/model/todo_list.dart';
-import 'package:listapp/widgets/connection_indicator.dart';
 import 'package:listapp/widgets/add_button.dart';
+import 'package:listapp/widgets/connection_indicator.dart';
 import 'package:listapp/widgets/speech_controllers/hp_movement_speech_controller.dart';
 import 'package:listapp/widgets/speech_controllers/hp_touch_speech_controller.dart';
 import 'package:listapp/widgets/todo_listing.dart';
+
+import '../cutom_theme.dart';
 import 'add_todo_dialog.dart';
 import 'list_card.dart';
 
@@ -93,18 +94,20 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.all(8.0),
             child: OutlinedButton(
               style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: ThemeData.dark().cardColor)),
-              child: Icon(
-                Icons.play_arrow_rounded,
-                color: ThemeData.dark().indicatorColor,
-              ),
+                  side: BorderSide(color: CustomTheme.borderColor(context))),
+              child: Icon(Icons.play_arrow_rounded,
+                  color: CustomTheme.current(context).indicatorColor),
               onPressed: () => _readListElements(context),
             ),
           ),
         ],
         title: Text(
           "Listen",
-          style: style.merge(const TextStyle(fontSize: 24)),
+          style: Theme.of(context).textTheme.headline6?.merge(TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: (Theme.of(context).textTheme.headline6 != null)
+                  ? Theme.of(context).textTheme.headline6!.fontSize! + 2
+                  : null)),
         ),
       ),
       body: FutureBuilder<List<ToDoList>>(
@@ -115,10 +118,13 @@ class _HomePageState extends State<HomePage> {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.data!.isEmpty) {
-            return const Center(
+            return Center(
                 child: Text(
               'Keine Listen',
-              style: style,
+              style: Theme.of(context).textTheme.subtitle1?.merge(TextStyle(
+                  fontSize: (Theme.of(context).textTheme.subtitle1 != null)
+                      ? Theme.of(context).textTheme.subtitle1!.fontSize! + 2
+                      : null)),
             ));
           }
           List<ToDoList> toDoLists = snapshot.data!;

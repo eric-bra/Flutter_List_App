@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:esense_flutter/esense.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 /// Describes the different Events that can occur when reading the sensor values of the Headphones.
-enum EventType { front, right, left, nothing, error}
+enum EventType { front, right, left, nothing, error }
 
 /// Wraps the functionality provided by the eSense-Flutter library.
 class ESenseHandler {
-
   static final ESenseHandler instance = ESenseHandler._init();
   static final ESenseManager _eSenseManager = ESenseManager();
 
@@ -19,10 +19,11 @@ class ESenseHandler {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString("esense_name") ?? "eSense-0151";
   }
-   Future<void> setESenseName(String nName) async {
-     SharedPreferences prefs = await SharedPreferences.getInstance();
-     await prefs.setString("esense_name", nName);
-   }
+
+  Future<void> setESenseName(String nName) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString("esense_name", nName);
+  }
 
   ///Returns whether the headphones are paired with the device right now.
   Future<bool> get liveConnected async {
@@ -30,6 +31,7 @@ class ESenseHandler {
     connectionNotifier.value = connected;
     return connected;
   }
+
   /// Returns a Stream that contains the Connection Events occuring in Relation with the given headphones.
   get connectionEvents {
     return _eSenseManager.connectionEvents;
@@ -53,8 +55,7 @@ class ESenseHandler {
   /// The search process does not time out and therefore only one search at a time is necessary.
   Future<void> connectToESense() async {
     await _eSenseManager.disconnect();
-    var stream = _eSenseManager.connectionEvents.listen((event) {
-      });
+    var stream = _eSenseManager.connectionEvents.listen((event) {});
     String name = await eSenseName;
     await _eSenseManager.connect(name);
     stream.cancel();
@@ -64,8 +65,8 @@ class ESenseHandler {
   /// and determines what kind of event occurred since the calling of the method.
   Future<EventType> determineEventType() async {
     EventType event_ = EventType.nothing;
-    if (! await liveConnected) {
-        return EventType.error;
+    if (!await liveConnected) {
+      return EventType.error;
     }
     await Future.delayed(const Duration(milliseconds: 600));
     await for (final event in _eSenseManager.sensorEvents) {

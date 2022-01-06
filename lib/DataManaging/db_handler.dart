@@ -1,8 +1,8 @@
+import 'dart:async';
+
 import 'package:listapp/model/todo.dart';
 import 'package:listapp/model/todo_list.dart';
-import 'dart:async';
 import 'package:path/path.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 /// Wraps plugins that handles persistence.
@@ -22,7 +22,8 @@ class DbHandler {
   Future<Database> get database async {
     if (_db != null) return _db!;
 
-    _db = await _initDB();return _db!;
+    _db = await _initDB();
+    return _db!;
   }
 
   /// Initializes the database and creates tables if necessary.
@@ -78,9 +79,8 @@ class DbHandler {
     // Get a reference to the database.
     final db = await instance.database;
 
-    final List<Map<String, dynamic>> maps = await db.query('todos',
-        where:'list_id = ?',
-        whereArgs: [listId] );
+    final List<Map<String, dynamic>> maps =
+        await db.query('todos', where: 'list_id = ?', whereArgs: [listId]);
 
     return List.generate(maps.length, (i) {
       return ToDo(
@@ -106,11 +106,13 @@ class DbHandler {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
+
   /// Inserts a new ToDoList into the Database.
   Future<void> insertTodoList(String name, int listId) async {
     ToDoList list = ToDoList(
-        name: name,
-        id: DateTime.now().millisecondsSinceEpoch,);
+      name: name,
+      id: DateTime.now().millisecondsSinceEpoch,
+    );
     final db = await instance.database;
     await db.insert(
       'todolists',

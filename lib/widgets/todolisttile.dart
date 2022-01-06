@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:listapp/constants.dart';
+import 'package:listapp/cutom_theme.dart';
 import 'package:listapp/model/todo.dart';
 
 class ToDoListTile extends StatelessWidget {
-  const ToDoListTile({Key? key, required this.todo, required this.onCheck, required this.onLongPress})
+  const ToDoListTile(
+      {Key? key,
+      required this.todo,
+      required this.onCheck,
+      required this.onLongPress})
       : super(key: key);
   final ToDo todo;
   final Function(bool b, int n) onCheck;
@@ -18,12 +22,15 @@ class ToDoListTile extends StatelessWidget {
         },
         child: Card(
             color: todo.checked
-                ? ThemeData.dark().disabledColor
-                : ThemeData.dark().cardColor,
+                ? CustomTheme.current(context).disabledColor
+                : CustomTheme.current(context).cardColor,
             child: CheckboxListTile(
                 title: Text(
                   todo.content,
-                  style: style,
+                  style: Theme.of(context).textTheme.bodyText1?.merge(TextStyle(
+                      fontSize: (Theme.of(context).textTheme.bodyText1 != null)
+                          ? Theme.of(context).textTheme.bodyText1!.fontSize! + 2
+                          : null)),
                 ),
                 value: todo.checked,
                 onChanged: (b) {

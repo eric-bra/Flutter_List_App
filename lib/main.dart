@@ -6,6 +6,8 @@ import 'package:listapp/DataManaging/esense_handler.dart';
 import 'package:listapp/DataManaging/tts_handler.dart';
 import 'package:listapp/widgets/homepage.dart';
 
+import 'cutom_theme.dart';
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   TtSHandler.instance;
@@ -15,7 +17,7 @@ void main() {
   bool mutex = false;
   bool wasConnected = true;
   Timer.periodic(const Duration(seconds: 5), (Timer t) async {
-    if (mutex){
+    if (mutex) {
       return;
     } else {
       mutex = true;
@@ -36,7 +38,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData.dark(),
+      theme: CustomTheme.light,
+      darkTheme: CustomTheme.dark,
+      themeMode: ThemeMode.system,
       title: 'Flutter Demo',
       home: const HomePage(),
     );

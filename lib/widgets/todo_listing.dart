@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:listapp/DataManaging/db_handler.dart';
 import 'package:listapp/DataManaging/esense_handler.dart';
-import 'package:listapp/constants.dart';
 import 'package:listapp/model/todo.dart';
 import 'package:listapp/widgets/add_button.dart';
 import 'package:listapp/widgets/add_todo_dialog.dart';
 import 'package:listapp/widgets/speech_controllers/listings_touch_speech_controller.dart';
 import 'package:listapp/widgets/todolisttile.dart';
 
+import '../cutom_theme.dart';
 import 'connection_indicator.dart';
 import 'speech_controllers/listings_movement_speech_controller.dart';
 
@@ -102,17 +102,23 @@ class _ToDoListingState extends State<ToDoListing> {
                     showChecked = changed;
                   });
                 }),
-            MaterialButton(
-              child: Icon(
-                Icons.play_arrow_rounded,
-                color: ThemeData.dark().indicatorColor,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: CustomTheme.borderColor(context))),
+                child: Icon(Icons.play_arrow_rounded,
+                    color: CustomTheme.current(context).indicatorColor),
+                onPressed: () => _readListElements(context),
               ),
-              onPressed: () => _readListElements(context),
             ),
           ],
           title: Text(
             widget.listName,
-            style: style,
+            style: Theme.of(context).textTheme.headline6?.merge(TextStyle(
+                fontSize: (Theme.of(context).textTheme.headline6 != null)
+                    ? Theme.of(context).textTheme.headline6!.fontSize! + 2
+                    : null)),
           )),
       body: buildList(),
       floatingActionButton: AddButton(
@@ -142,7 +148,9 @@ class _ToDoListingState extends State<ToDoListing> {
             final item = list[index];
             _refreshList();
             return ToDoListTile(
-                todo: item, onCheck: _onCheck, onLongPress: (val) {
+                todo: item,
+                onCheck: _onCheck,
+                onLongPress: (val) {
                   setState(() {
                     _db.deleteToDo;
                   });

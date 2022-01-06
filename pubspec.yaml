@@ -62,7 +62,27 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
-
+  fonts:
+    - family: SF-Pro-Rounded
+      fonts:
+          - asset: assets/fonts/SF-Pro-Rounded/FontsFree-Net-SF-Pro-Rounded-Thin.ttf
+            weight: 100
+          - asset: assets/fonts/SF-Pro-Rounded/FontsFree-Net-SF-Pro-Rounded-Ultralight.ttf
+            weight: 200
+          - asset: assets/fonts/SF-Pro-Rounded/FontsFree-Net-SF-Pro-Rounded-Light.ttf
+            weight: 300
+          - asset: assets/fonts/SF-Pro-Rounded/FontsFree-Net-SF-Pro-Rounded-Regular.ttf
+            weight: 400
+          - asset: assets/fonts/SF-Pro-Rounded/FontsFree-Net-SF-Pro-Rounded-Medium.ttf
+            weight: 500
+          - asset: assets/fonts/SF-Pro-Rounded/FontsFree-Net-SF-Pro-Rounded-Semibold.ttf
+            weight: 600
+          - asset: assets/fonts/SF-Pro-Rounded/FontsFree-Net-SF-Pro-Rounded-Bold.ttf
+            weight: 700
+          - asset: assets/fonts/SF-Pro-Rounded/FontsFree-Net-SF-Pro-Rounded-Heavy.ttf
+            weight: 800
+          - asset: assets/fonts/SF-Pro-Rounded/FontsFree-Net-SF-Pro-Rounded-Black.ttf
+            weight: 900
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
