@@ -6,7 +6,7 @@ import 'package:listapp/DataManaging/esense_handler.dart';
 import 'package:listapp/DataManaging/tts_handler.dart';
 import 'package:listapp/widgets/homepage.dart';
 
-import 'cutom_theme.dart';
+import 'custom_theme.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

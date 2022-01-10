@@ -7,7 +7,7 @@ import 'package:listapp/widgets/add_todo_dialog.dart';
 import 'package:listapp/widgets/speech_controllers/listings_touch_speech_controller.dart';
 import 'package:listapp/widgets/todolisttile.dart';
 
-import '../cutom_theme.dart';
+import '../custom_theme.dart';
 import 'connection_indicator.dart';
 import 'speech_controllers/listings_movement_speech_controller.dart';
 
@@ -63,6 +63,7 @@ class _ToDoListingState extends State<ToDoListing> {
 
   void _createNewTodo(BuildContext context) {
     showModalBottomSheet(
+        isScrollControlled: true,
         context: context,
         builder: (context) {
           return AddToDoDialog(onFinish: _addTodo);

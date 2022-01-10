@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:listapp/DataManaging/esense_handler.dart';
 
-import '../cutom_theme.dart';
+import '../custom_theme.dart';
 import 'add_button.dart';
 
 class ConnectionIndicator extends StatefulWidget {
@@ -17,6 +17,9 @@ class _ConnectionIndicatorState extends State<ConnectionIndicator> {
   void _changeName() async {
     var name = await _eSense.eSenseName;
     showModalBottomSheet(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(15.0))),
+        isScrollControlled: true,
         context: context,
         builder: (context) {
           return ChangeNameDialog(
@@ -66,7 +69,8 @@ class _ChangeNameDialogState extends State<ChangeNameDialog> {
   Widget build(BuildContext context) {
     return Padding(
         padding: MediaQuery.of(context).viewInsets,
-        child: Column(
+        child: SafeArea(
+            child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
@@ -87,20 +91,38 @@ class _ChangeNameDialogState extends State<ChangeNameDialog> {
             Row(
               children: [
                 Expanded(
-                    child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: TextField(
-                    onChanged: (text) => setState(() {
-                      _val = text;
-                    }),
-                    onSubmitted: (text) {
-                      _val = text;
-                    },
-                    style: const TextStyle(fontSize: 20),
-                  ),
-                )),
+                  child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: CustomTheme.current(context) == CustomTheme.light
+                          ? TextField(
+                        autofocus: true,
+                        onChanged: (text) => setState(() {
+                          _val = text;
+                        }),
+                        onSubmitted: (text) {
+                          _val = text;
+                        },
+                        cursorColor: const Color(0xff666666),
+                        decoration: const InputDecoration(
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Color(0xff666666)),
+                          ),
+                        ),
+                        style: Theme.of(context).textTheme.bodyText1,
+                      )
+                          : TextField(
+                        autofocus: true,
+                        onChanged: (text) => setState(() {
+                          _val = text;
+                        }),
+                        onSubmitted: (text) {
+                          _val = text;
+                        },
+                        style: Theme.of(context).textTheme.bodyText1,
+                      )),
+                ),
                 Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                     child: AddButton(onPressed: () {
                       widget.onFinish(_val);
                       Navigator.of(context).pop();
@@ -108,6 +130,6 @@ class _ChangeNameDialogState extends State<ChangeNameDialog> {
               ],
             )
           ],
-        ));
+        )));
   }
 }

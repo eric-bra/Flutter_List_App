@@ -8,7 +8,7 @@ import 'package:listapp/widgets/speech_controllers/hp_movement_speech_controller
 import 'package:listapp/widgets/speech_controllers/hp_touch_speech_controller.dart';
 import 'package:listapp/widgets/todo_listing.dart';
 
-import '../cutom_theme.dart';
+import '../custom_theme.dart';
 import 'add_todo_dialog.dart';
 import 'list_card.dart';
 
@@ -37,6 +37,9 @@ class _HomePageState extends State<HomePage> {
 
   void _createNewTodoList(BuildContext context) {
     showModalBottomSheet(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(15.0))),
+        isScrollControlled: true,
         context: context,
         builder: (context) {
           return AddToDoDialog(onFinish: _addTodoList);
@@ -86,6 +89,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+      return buildScaffold();
+  }
+
+  Widget buildScaffold() {
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -110,27 +117,28 @@ class _HomePageState extends State<HomePage> {
                   : null)),
         ),
       ),
-      body: FutureBuilder<List<ToDoList>>(
-        future: _db.todoLists(),
-        initialData: List.empty(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.data!.isEmpty) {
-            return Center(
-                child: Text(
-              'Keine Listen',
-              style: Theme.of(context).textTheme.subtitle1?.merge(TextStyle(
-                  fontSize: (Theme.of(context).textTheme.subtitle1 != null)
-                      ? Theme.of(context).textTheme.subtitle1!.fontSize! + 2
-                      : null)),
-            ));
-          }
-          List<ToDoList> toDoLists = snapshot.data!;
-          return buildList(toDoLists, context);
-        },
-      ),
+      body: SafeArea(
+            child: FutureBuilder<List<ToDoList>>(
+              future: _db.todoLists(),
+              initialData: List.empty(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.data!.isEmpty) {
+                  return Center(
+                      child: Text(
+                        'Keine Listen',
+                        style: Theme.of(context).textTheme.subtitle1?.merge(TextStyle(
+                            fontSize: (Theme.of(context).textTheme.subtitle1 != null)
+                                ? Theme.of(context).textTheme.subtitle1!.fontSize! + 2
+                                : null)),
+                      ));
+                }
+                List<ToDoList> toDoLists = snapshot.data!;
+                return buildList(toDoLists, context);
+              },
+            )),
       floatingActionButton: AddButton(
         onPressed: () {
           _createNewTodoList(context);

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:listapp/cutom_theme.dart';
+import 'package:listapp/custom_theme.dart';
 import 'package:listapp/model/todo.dart';
 
 class ToDoListTile extends StatelessWidget {
