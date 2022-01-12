@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:listapp/DataManaging/db_handler.dart';
 import 'package:listapp/DataManaging/esense_handler.dart';
@@ -12,11 +14,16 @@ import 'connection_indicator.dart';
 import 'speech_controllers/listings_movement_speech_controller.dart';
 
 class ToDoListing extends StatefulWidget {
-  const ToDoListing({Key? key, required this.listId, required this.listName})
+  const ToDoListing(
+      {Key? key,
+      required this.listId,
+      required this.listName,
+      required this.startInSpeechMode})
       : super(key: key);
 
   final String listName;
   final int listId;
+  final bool startInSpeechMode;
 
   @override
   _ToDoListingState createState() => _ToDoListingState();
@@ -39,6 +46,7 @@ class _ToDoListingState extends State<ToDoListing> {
   void initState() {
     super.initState();
     _refreshList();
+    if(widget.startInSpeechMode)_openBottomSheet();
   }
 
   _refreshList() async {
@@ -61,8 +69,10 @@ class _ToDoListingState extends State<ToDoListing> {
     _refreshList();
   }
 
-  void _createNewTodo(BuildContext context) {
+  void _createNewTodo() {
     showModalBottomSheet(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(15.0))),
         isScrollControlled: true,
         context: context,
         builder: (context) {
@@ -79,6 +89,8 @@ class _ToDoListingState extends State<ToDoListing> {
     if (list.isEmpty) return;
     bool movement = await _eSense.liveConnected;
     showModalBottomSheet(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(15.0))),
         context: context,
         builder: (context) {
           return movement
@@ -90,6 +102,10 @@ class _ToDoListingState extends State<ToDoListing> {
         });
   }
 
+  void _openBottomSheet() async{
+    await Future.delayed(const Duration(milliseconds: 300));
+    _readListElements(context);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -124,7 +140,7 @@ class _ToDoListingState extends State<ToDoListing> {
       body: buildList(),
       floatingActionButton: AddButton(
         onPressed: () {
-          _createNewTodo(context);
+          _createNewTodo();
         },
       ),
     );

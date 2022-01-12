@@ -67,6 +67,7 @@ class _HomePageState extends State<HomePage> {
         builder: (context) => ToDoListing(
           listId: element.id,
           listName: element.name,
+          startInSpeechMode: true,
         ),
       ),
     );
@@ -76,6 +77,8 @@ class _HomePageState extends State<HomePage> {
     if (lists.isEmpty) return;
     bool movement = await _eSense.liveConnected;
     showModalBottomSheet(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(15.0))),
         context: context,
         builder: (context) {
           return movement
@@ -157,7 +160,7 @@ class _HomePageState extends State<HomePage> {
                 await Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => ToDoListing(
                     listId: list.id,
-                    listName: list.name,
+                    listName: list.name, startInSpeechMode: false,
                   ),
                 ));
               },
@@ -167,5 +170,5 @@ class _HomePageState extends State<HomePage> {
                 onDelete: _deleteTodoList,
               ),
             );
-          });
+          },);
 }

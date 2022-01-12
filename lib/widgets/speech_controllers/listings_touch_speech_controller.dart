@@ -3,6 +3,7 @@ import 'package:listapp/DataManaging/tts_handler.dart';
 import 'package:listapp/model/readable.dart';
 import 'package:listapp/widgets/speech_controllers/speech_controller.dart';
 
+import '../../palette.dart';
 import '../WidgetFactories.dart';
 
 class ListingsTouchSpeechController extends SpeechController {
@@ -56,13 +57,14 @@ class _ListingsTouchSpeechControllerState
 
   List<Widget> _widgets() {
     List<Widget> list = [];
-    var back = ButtonFactory.button(const Icon(Icons.arrow_back_rounded), _dec);
-    var check = ButtonFactory.button(const Icon(Icons.check_rounded), () {
+    final iconColor = Palette.kToDark.shade600;
+    var back = ButtonFactory.button(Icon(Icons.arrow_back_rounded, color: iconColor), _dec);
+    var check = ButtonFactory.button(Icon(Icons.check_rounded, color: iconColor), () {
       widget.onAction(widget.list[counter].getId());
       if (counter < widget.list.length - 1) _inc();
     });
     var next =
-        ButtonFactory.button(const Icon(Icons.arrow_forward_rounded), _inc);
+        ButtonFactory.button(Icon(Icons.arrow_forward_rounded, color: iconColor), _inc);
     if (counter > 0) {
       list.add(back);
     }
