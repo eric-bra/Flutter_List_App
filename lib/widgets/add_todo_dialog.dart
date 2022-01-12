@@ -25,7 +25,7 @@ class _AddToDoDialogState extends State<AddToDoDialog> {
           children: [
             Expanded(
                 child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
               child: CustomTheme.current(context) == CustomTheme.light
                   ? TextField(
                       autofocus: true,

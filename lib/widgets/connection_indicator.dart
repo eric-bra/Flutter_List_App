@@ -92,7 +92,7 @@ class _ChangeNameDialogState extends State<ChangeNameDialog> {
               children: [
                 Expanded(
                   child: Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                       child: CustomTheme.current(context) == CustomTheme.light
                           ? TextField(
                         autofocus: true,
